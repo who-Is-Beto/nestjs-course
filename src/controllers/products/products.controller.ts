@@ -7,6 +7,8 @@ import {
   Body,
   Put,
   Delete,
+  HttpStatus,
+  HttpCode,
 } from '@nestjs/common';
 import {
   IProductQueries,
@@ -25,6 +27,7 @@ export class ProductsController {
   }
 
   @Get('/:id')
+  @HttpCode(HttpStatus.CREATED)
   getProduct(@Param('id') id: string): IProductCreate {
     return {
       message: `product id: ${id}`,

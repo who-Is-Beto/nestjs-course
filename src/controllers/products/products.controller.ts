@@ -1,23 +1,19 @@
-import { Controller, Get, Query, Param, Post, Body } from '@nestjs/common';
-
-interface IProductQueries {
-  limit: string;
-  offset: string;
-}
-
-interface IProductCreate {
-  message: string;
-}
-
-interface IProductBody extends IProductCreate {
-  price: number;
-  name: string;
-}
-
-interface IProductPost extends IProductCreate {
-  payload: IProductBody;
-}
-
+import {
+  Controller,
+  Get,
+  Query,
+  Param,
+  Post,
+  Body,
+  Put,
+  Delete,
+} from '@nestjs/common';
+import {
+  IProductQueries,
+  IProductCreate,
+  IProductPost,
+  IProductBody,
+} from './interfaces/interfaces';
 @Controller('products')
 export class ProductsController {
   @Get('')
@@ -40,6 +36,24 @@ export class ProductsController {
     return {
       message: 'product created',
       payload,
+    };
+  }
+
+  @Put('/:id')
+  updateProduct(
+    @Param('id') id: string,
+    @Body() payload: IProductBody,
+  ): IProductPost {
+    return {
+      message: `product id: ${id}`,
+      payload,
+    };
+  }
+
+  @Delete('/:id')
+  deleteProduct(@Param('id') id: string): IProductCreate {
+    return {
+      message: `deleted product id: ${id}`,
     };
   }
 }

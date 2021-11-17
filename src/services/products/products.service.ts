@@ -20,7 +20,7 @@ export class ProductsService {
   }
 
   public findOne(id: number): IProduct {
-    const product = this.products.filter((product) => +id === product.id)[0];
+    const product = this.products.filter((product) => id === product.id)[0];
     if (!product) {
       throw new NotFoundException(`Product #${id} not found`);
     }

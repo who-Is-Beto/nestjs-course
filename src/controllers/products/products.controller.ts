@@ -16,47 +16,46 @@ import {
   IProductPost,
   IProductBody,
 } from './interfaces/interfaces';
+import { ProductsService } from '../../services/products/products.service';
+import { IProduct } from '../../services/products/types/interfaces';
+
 @Controller('products')
 export class ProductsController {
+  constructor(private productsService: ProductsService) {}
+
   @Get('')
-  getProductByQuery(@Query() params: IProductQueries): IProductCreate {
-    const { limit = '100', offset = '50' } = params;
-    return {
-      message: `product limit: ${limit}, offset: ${offset}`,
-    };
+  getProductByQuery(@Query() params: IProductQueries): Array<IProduct> {
+    return this.productsService.findAll();
   }
 
   @Get('/:id')
   @HttpCode(HttpStatus.CREATED)
-  getProduct(@Param('id') id: string): IProductCreate {
-    return {
-      message: `product id: ${id}`,
-    };
+  getProduct(@Param('id') id: number): IProduct | void {
+    return this.productsService.findOne(id);
   }
 
   @Post()
-  createProduct(@Body() payload: IProductBody): IProductPost {
+  createProduct(@Body() payload: IProduct): IProductPost {
     return {
       message: 'product created',
-      payload,
+      payload: this.productsService.create({
+        ...payload,
+      }),
     };
   }
 
   @Put('/:id')
   updateProduct(
-    @Param('id') id: string,
-    @Body() payload: IProductBody,
-  ): IProductPost {
-    return {
-      message: `product id: ${id}`,
-      payload,
-    };
+    @Param('id') id: number,
+    @Body() payload: IProduct,
+  ): IProduct | string {
+    return this.productsService.update(id, payload);
   }
 
   @Delete('/:id')
-  deleteProduct(@Param('id') id: string): IProductCreate {
+  deleteProduct(@Param('id') id: number): IProductCreate {
     return {
-      message: `deleted product id: ${id}`,
+      message: this.productsService.delete(id),
     };
   }
 }
